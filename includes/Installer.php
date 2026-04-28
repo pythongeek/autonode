@@ -18,6 +18,8 @@ final class Installer {
             'max_retry_attempts' => 3,
             'brute_force_limit'  => 10,
             'brute_force_window' => 300,
+            'min_capability'     => 'manage_options',
+            'max_sideload_size'  => 20, /* MB */
         ] );
         flush_rewrite_rules();
     }

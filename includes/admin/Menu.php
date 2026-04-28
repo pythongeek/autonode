@@ -15,21 +15,22 @@ final class Menu {
         add_action( 'admin_enqueue_scripts', [ __CLASS__, 'enqueue' ] );
         add_action( 'wp_ajax_autonode_dismiss_apppass_notice', [ __CLASS__, 'dismiss_apppass' ] );
 
-        foreach ( [ 'create_key', 'revoke_key', 'rotate_key', 'save_settings', 'get_chart_data', 'create_webhook', 'delete_webhook', 'test_webhook', 'toggle_webhook', 'unblock_ip' ] as $a ) {
+        foreach ( [ 'create_key', 'revoke_key', 'rotate_key', 'save_settings', 'get_chart_data', 'create_webhook', 'delete_webhook', 'test_webhook', 'toggle_webhook', 'unblock_ip', 'clear_logs' ] as $a ) {
             add_action( "wp_ajax_autonode_{$a}", [ Ajax_Handler::class, $a ] );
         }
     }
 
     public static function register_menus(): void {
-        add_menu_page( 'AutoNode WP', 'AutoNode WP', 'manage_options', 'amp-cm', [ __CLASS__, 'page_dashboard' ], self::svg_icon(), 80 );
-        add_submenu_page( 'amp-cm', 'Dashboard',     'Dashboard',     'manage_options', 'amp-cm',           [ __CLASS__, 'page_dashboard' ] );
-        add_submenu_page( 'amp-cm', 'API Keys',      'API Keys',      'manage_options', 'autonode-keys',      [ __CLASS__, 'page_keys' ] );
-        add_submenu_page( 'amp-cm', 'Webhooks',      'Webhooks',      'manage_options', 'autonode-webhooks',  [ __CLASS__, 'page_webhooks' ] );
-        add_submenu_page( 'amp-cm', 'n8n Templates', 'n8n Templates', 'manage_options', 'autonode-templates', [ __CLASS__, 'page_templates' ] );
-        add_submenu_page( 'amp-cm', 'Activity Log',  'Activity Log',  'manage_options', 'autonode-logs',      [ __CLASS__, 'page_logs' ] );
-        add_submenu_page( 'amp-cm', 'Settings',      'Settings',      'manage_options', 'autonode-settings',  [ __CLASS__, 'page_settings' ] );
-        add_submenu_page( 'amp-cm', 'API Docs',      'API Docs',      'manage_options', 'autonode-docs',      [ __CLASS__, 'page_docs' ] );
-        add_submenu_page( 'amp-cm', 'Compatibility', 'Compatibility', 'manage_options', 'autonode-compat',    [ __CLASS__, 'page_compat' ] );
+        $cap = self::get_cap();
+        add_menu_page( 'AutoNode WP', 'AutoNode WP', $cap, 'amp-cm', [ __CLASS__, 'page_dashboard' ], self::svg_icon(), 80 );
+        add_submenu_page( 'amp-cm', esc_html__( 'Dashboard', 'autonode' ),     esc_html__( 'Dashboard', 'autonode' ),     $cap, 'amp-cm',           [ __CLASS__, 'page_dashboard' ] );
+        add_submenu_page( 'amp-cm', esc_html__( 'API Keys', 'autonode' ),      esc_html__( 'API Keys', 'autonode' ),      $cap, 'autonode-keys',      [ __CLASS__, 'page_keys' ] );
+        add_submenu_page( 'amp-cm', esc_html__( 'Webhooks', 'autonode' ),      esc_html__( 'Webhooks', 'autonode' ),      $cap, 'autonode-webhooks',  [ __CLASS__, 'page_webhooks' ] );
+        add_submenu_page( 'amp-cm', esc_html__( 'n8n Templates', 'autonode' ), esc_html__( 'n8n Templates', 'autonode' ), $cap, 'autonode-templates', [ __CLASS__, 'page_templates' ] );
+        add_submenu_page( 'amp-cm', esc_html__( 'Activity Log', 'autonode' ),  esc_html__( 'Activity Log', 'autonode' ),  $cap, 'autonode-logs',      [ __CLASS__, 'page_logs' ] );
+        add_submenu_page( 'amp-cm', esc_html__( 'Settings', 'autonode' ),      esc_html__( 'Settings', 'autonode' ),      $cap, 'autonode-settings',  [ __CLASS__, 'page_settings' ] );
+        add_submenu_page( 'amp-cm', esc_html__( 'API Docs', 'autonode' ),      esc_html__( 'API Docs', 'autonode' ),      $cap, 'autonode-docs',      [ __CLASS__, 'page_docs' ] );
+        add_submenu_page( 'amp-cm', esc_html__( 'Compatibility', 'autonode' ), esc_html__( 'Compatibility', 'autonode' ), $cap, 'autonode-compat',    [ __CLASS__, 'page_compat' ] );
     }
 
     public static function enqueue( string $hook ): void {
@@ -114,12 +115,17 @@ final class Menu {
 
     public static function dismiss_apppass(): void {
         check_ajax_referer( 'autonode_admin', 'nonce' );
-        if ( current_user_can( 'manage_options' ) ) update_option( 'autonode_apppass_dismissed', true );
+        if ( current_user_can( self::get_cap() ) ) update_option( 'autonode_apppass_dismissed', true );
         wp_send_json_success();
     }
 
     private static function cap(): void {
-        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Insufficient permissions.' );
+        if ( ! current_user_can( self::get_cap() ) ) wp_die( esc_html__( 'Insufficient permissions.', 'autonode' ) );
+    }
+
+    public static function get_cap(): string {
+        $s = get_option( 'autonode_settings', [] );
+        return (string) ( $s['min_capability'] ?? 'manage_options' );
     }
 
     private static function svg_icon(): string {

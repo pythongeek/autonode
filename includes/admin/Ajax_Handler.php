@@ -7,9 +7,18 @@ final class Ajax_Handler {
 
     private static function verify(): void {
         check_ajax_referer( 'autonode_admin', 'nonce' );
-        if ( ! current_user_can( 'manage_options' ) ) {
+        if ( ! current_user_can( Menu::get_cap() ) ) {
             wp_send_json_error( array( 'message' => 'Permission denied.' ), 403 );
         }
+    }
+
+    public static function clear_logs(): void {
+        self::verify();
+        global $wpdb;
+        $wpdb->query( "TRUNCATE TABLE {$wpdb->prefix}autonode_log" ); // phpcs:ignore
+        $wpdb->query( "TRUNCATE TABLE {$wpdb->prefix}autonode_analytics" ); // phpcs:ignore
+        $wpdb->query( "TRUNCATE TABLE {$wpdb->prefix}autonode_webhook_log" ); // phpcs:ignore
+        wp_send_json_success();
     }
 
     public static function create_key(): void {
@@ -74,6 +83,8 @@ final class Ajax_Handler {
             'brute_force_window'  => absint( wp_unslash( $_POST['brute_force_window'] ?? 300 ) ), // phpcs:ignore WordPress.Security.NonceVerification.Missing
             'whitelisted_emails'  => sanitize_textarea_field( wp_unslash( $_POST['whitelisted_emails'] ?? '' ) ), // phpcs:ignore WordPress.Security.NonceVerification.Missing
             'flatten_n8n_webhooks' => ! empty( $_POST['flatten_n8n_webhooks'] ), // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            'min_capability'      => sanitize_key( wp_unslash( $_POST['min_capability'] ?? 'manage_options' ) ), // phpcs:ignore WordPress.Security.NonceVerification.Missing
+            'max_sideload_size'   => absint( wp_unslash( $_POST['max_sideload_size'] ?? 20 ) ), // phpcs:ignore WordPress.Security.NonceVerification.Missing
         );
         update_option( 'autonode_settings', $s );
         update_option( 'autonode_log_retention_days', $s['log_retention_days'] );

@@ -14,15 +14,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/* Temporarily add debug logging for fatal errors */
-register_shutdown_function( function() {
-    $error = error_get_last();
-    if ( $error && in_array( $error['type'], [ E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR ] ) ) {
-        $log = gmdate( 'Y-m-d H:i:s' ) . " FATAL: " . $error['message'] . " in " . $error['file'] . " on line " . $error['line'] . "\n";
-        file_put_contents( __DIR__ . '/plugin-debug.log', $log, FILE_APPEND );
-    }
-});
-
 define( 'AUTONODE_VERSION',    '4.2.0' );
 define( 'AUTONODE_FILE',       __FILE__ );
 define( 'AUTONODE_DIR',        plugin_dir_path( __FILE__ ) );

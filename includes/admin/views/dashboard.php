@@ -10,30 +10,37 @@ $autonode_ms_json     = wp_json_encode( array_map( fn( $r ) => $r['total_ms'] &&
     <div class="amp-header-left">
         <h1 class="amp-page-title">
             <svg class="amp-logo-animate" width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#28CCCD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            AutoNode WP
+            <?php esc_html_e( 'AutoNode WP', 'autonode' ); ?>
         </h1>
         <span class="amp-badge-pill">v<?php echo esc_html( AUTONODE_VERSION ); ?></span>
         <?php $autonode_sp = \AutoNode\Rankmath_Handler::active_plugin(); ?>
         <span class="amp-badge-pill amp-pill-<?php echo esc_attr( $autonode_sp ); ?>">
-            <?php echo 'rankmath' === $autonode_sp ? ' Rank Math' : ( 'yoast' === $autonode_sp ? ' Yoast' : ' No SEO Plugin' ); ?>
+            <?php 
+                if ( 'rankmath' === $autonode_sp ) {
+                    esc_html_e( 'Rank Math', 'autonode' );
+                } elseif ( 'yoast' === $autonode_sp ) {
+                    esc_html_e( 'Yoast', 'autonode' );
+                } else {
+                    esc_html_e( 'No SEO Plugin', 'autonode' );
+                }
+            ?>
         </span>
         <?php if ( $compat['is_agentic'] ) : ?>
-        <span class="amp-badge-pill amp-pill-ok"> Agentic Pro </span>
+        <span class="amp-badge-pill amp-pill-ok"><?php esc_html_e( 'Agentic Pro', 'autonode' ); ?></span>
         <?php endif; ?>
     </div>
     <div class="amp-header-right">
-        <a href="<?php echo esc_url( admin_url( 'admin.php?page=autonode-keys' ) ); ?>" class="amp-btn amp-btn-primary">+ New API Key</a>
+        <a href="<?php echo esc_url( admin_url( 'admin.php?page=autonode-keys' ) ); ?>" class="amp-btn amp-btn-primary">+ <?php esc_html_e( 'New API Key', 'autonode' ); ?></a>
     </div>
 </div>
 
 <div class="amp-card amp-hero-card">
     <div class="amp-card-body">
-        <h2 style="margin-top:0; color:var(--amp-primary);">🚀 The Enterprise Bridge for n8n-First Automation</h2>
+        <h2 style="margin-top:0; color:var(--amp-primary);"><?php esc_html_e( '🚀 The Enterprise Bridge for n8n-First Automation', 'autonode' ); ?></h2>
         <p style="font-size:16px; color:var(--amp-dim);">
-            AutoNode WP is the missing link between AI intelligence and WordPress execution. 
-            Scale your content kingdom with zero manual entry and industrial-grade security.
+            <?php esc_html_e( 'AutoNode WP is the missing link between AI intelligence and WordPress execution. Scale your content kingdom with zero manual entry and industrial-grade security.', 'autonode' ); ?>
         </p>
-        <div class="amp-badge-pill amp-pill-ok">Your WordPress, now with Superpowers</div>
+        <div class="amp-badge-pill amp-pill-ok"><?php esc_html_e( 'Your WordPress, now with Superpowers', 'autonode' ); ?></div>
     </div>
 </div>
 
@@ -41,12 +48,12 @@ $autonode_ms_json     = wp_json_encode( array_map( fn( $r ) => $r['total_ms'] &&
 <div class="amp-grid-stats">
     <?php
     $autonode_cards = array(
-        array( 'Requests Today', number_format( $summary['requests_today'] ),  'amp-icon-blue', '<span class="dashicons dashicons-chart-bar"></span>' ),
-        array( 'Requests (7d)',  number_format( $summary['requests_week'] ),   'amp-icon-purple', '<span class="dashicons dashicons-chart-line"></span>' ),
-        array( 'Errors (24h)',   number_format( $summary['errors_24h'] ),      'amp-icon-red', '<span class="dashicons dashicons-warning"></span>' ),
-        array( 'Avg Response',   $summary['avg_response_ms'] . 'ms',           'amp-icon-green', '<span class="dashicons dashicons-clock"></span>' ),
-        array( 'Active Keys',    $active_keys,                                  'amp-icon-teal', '<span class="dashicons dashicons-admin-network"></span>' ),
-        array( 'WordPress',      get_bloginfo( 'version' ),                     'amp-icon-orange', '<span class="dashicons dashicons-wordpress"></span>' ),
+        array( __( 'Requests Today', 'autonode' ), number_format( $summary['requests_today'] ),  'amp-icon-blue', '<span class="dashicons dashicons-chart-bar"></span>' ),
+        array( __( 'Requests (7d)', 'autonode' ),  number_format( $summary['requests_week'] ),   'amp-icon-purple', '<span class="dashicons dashicons-chart-line"></span>' ),
+        array( __( 'Errors (24h)', 'autonode' ),   number_format( $summary['errors_24h'] ),      'amp-icon-red', '<span class="dashicons dashicons-warning"></span>' ),
+        array( __( 'Avg Response', 'autonode' ),   esc_html( $summary['avg_response_ms'] ) . 'ms', 'amp-icon-green', '<span class="dashicons dashicons-clock"></span>' ),
+        array( __( 'Active Keys', 'autonode' ),    esc_html( $active_keys ),                     'amp-icon-teal', '<span class="dashicons dashicons-admin-network"></span>' ),
+        array( __( 'WordPress', 'autonode' ),      esc_html( get_bloginfo( 'version' ) ),        'amp-icon-orange', '<span class="dashicons dashicons-wordpress"></span>' ),
     );
     foreach ( $autonode_cards as list( $autonode_label, $autonode_val, $autonode_cls, $autonode_icon ) ) : ?>
     <div class="amp-stat-card">
@@ -63,7 +70,7 @@ $autonode_ms_json     = wp_json_encode( array_map( fn( $r ) => $r['total_ms'] &&
 <div class="amp-grid-2">
     <div class="amp-card">
         <div class="amp-card-header">
-            <h3>Request Volume (24h)</h3>
+            <h3><?php esc_html_e( 'Request Volume (24h)', 'autonode' ); ?></h3>
             <div class="amp-chart-btns">
                 <button class="amp-chart-btn active" data-hours="24">24h</button>
                 <button class="amp-chart-btn" data-hours="48">48h</button>
@@ -73,7 +80,7 @@ $autonode_ms_json     = wp_json_encode( array_map( fn( $r ) => $r['total_ms'] &&
         <div style="height:200px;position:relative"><canvas id="amp-req-chart"></canvas></div>
     </div>
     <div class="amp-card">
-        <div class="amp-card-header"><h3>Response Time (ms)</h3></div>
+        <div class="amp-card-header"><h3><?php esc_html_e( 'Response Time (ms)', 'autonode' ); ?></h3></div>
         <div style="height:200px;position:relative"><canvas id="amp-ms-chart"></canvas></div>
     </div>
 </div>
@@ -81,12 +88,17 @@ $autonode_ms_json     = wp_json_encode( array_map( fn( $r ) => $r['total_ms'] &&
 <!-- Bottom Row -->
 <div class="amp-grid-2">
     <div class="amp-card">
-        <div class="amp-card-header"><h3>Top Endpoints (7d)</h3></div>
+        <div class="amp-card-header"><h3><?php esc_html_e( 'Top Endpoints (7d)', 'autonode' ); ?></h3></div>
         <?php if ( empty( $top_ep ) ) : ?>
-            <p class="amp-empty">No data yet. Make API requests to see analytics.</p>
+            <p class="amp-empty"><?php esc_html_e( 'No data yet. Make API requests to see analytics.', 'autonode' ); ?></p>
         <?php else : ?>
         <table class="amp-table">
-            <thead><tr><th>Endpoint</th><th>Method</th><th>Hits</th><th>Avg ms</th></tr></thead>
+            <thead><tr>
+                <th><?php esc_html_e( 'Endpoint', 'autonode' ); ?></th>
+                <th><?php esc_html_e( 'Method', 'autonode' ); ?></th>
+                <th><?php esc_html_e( 'Hits', 'autonode' ); ?></th>
+                <th><?php esc_html_e( 'Avg ms', 'autonode' ); ?></th>
+            </tr></thead>
             <tbody>
             <?php foreach ( $top_ep as $autonode_ep ) : ?>
             <tr>
@@ -103,22 +115,27 @@ $autonode_ms_json     = wp_json_encode( array_map( fn( $r ) => $r['total_ms'] &&
 
     <div class="amp-card">
         <div class="amp-card-header">
-            <h3>Active API Keys</h3>
-            <a href="<?php echo esc_url( admin_url( 'admin.php?page=autonode-keys' ) ); ?>" class="amp-link">Manage </a>
+            <h3><?php esc_html_e( 'Active API Keys', 'autonode' ); ?></h3>
+            <a href="<?php echo esc_url( admin_url( 'admin.php?page=autonode-keys' ) ); ?>" class="amp-link"><?php esc_html_e( 'Manage', 'autonode' ); ?></a>
         </div>
-        <?php $autonode_active = array_filter( $keys, fn( $k ) => ! $k['revoked'] ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound ?>
+        <?php $autonode_active = array_filter( $keys, fn( $k ) => ! $k['revoked'] ); ?>
         <?php if ( empty( $autonode_active ) ) : ?>
-            <p class="amp-empty"><a href="<?php echo esc_url( admin_url( 'admin.php?page=autonode-keys' ) ); ?>">Create your first API key </a></p>
+            <p class="amp-empty"><a href="<?php echo esc_url( admin_url( 'admin.php?page=autonode-keys' ) ); ?>"><?php esc_html_e( 'Create your first API key', 'autonode' ); ?></a></p>
         <?php else : ?>
         <table class="amp-table">
-            <thead><tr><th>Key</th><th>Label</th><th>Requests</th><th>Last Used</th></tr></thead>
+            <thead><tr>
+                <th><?php esc_html_e( 'Key', 'autonode' ); ?></th>
+                <th><?php esc_html_e( 'Label', 'autonode' ); ?></th>
+                <th><?php esc_html_e( 'Requests', 'autonode' ); ?></th>
+                <th><?php esc_html_e( 'Last Used', 'autonode' ); ?></th>
+            </tr></thead>
             <tbody>
             <?php foreach ( array_slice( $autonode_active, 0, 6 ) as $autonode_k ) : ?>
             <tr>
                 <td><code class="amp-key-prefix"><?php echo esc_html( $autonode_k['key_prefix'] ); ?></code></td>
                 <td><span class="amp-env-dot amp-env-<?php echo esc_attr( $autonode_k['environment'] ); ?>"></span><?php echo esc_html( $autonode_k['label'] ); ?></td>
                 <td><?php echo esc_html( number_format( (int) $autonode_k['total_requests'] ) ); ?></td>
-                <td><small><?php echo $autonode_k['last_used_at'] ? esc_html( human_time_diff( strtotime( $autonode_k['last_used_at'] ) ) . ' ago' ) : 'Never'; ?></small></td>
+                <td><small><?php echo $autonode_k['last_used_at'] ? esc_html( human_time_diff( strtotime( $autonode_k['last_used_at'] ) ) . ' ' . __( 'ago', 'autonode' ) ) : esc_html__( 'Never', 'autonode' ); ?></small></td>
             </tr>
             <?php endforeach; ?>
             </tbody>
@@ -127,22 +144,74 @@ $autonode_ms_json     = wp_json_encode( array_map( fn( $r ) => $r['total_ms'] &&
     </div>
 </div>
 
+<!-- System Status -->
+<div class="amp-card">
+    <div class="amp-card-header"><h3><?php esc_html_e( 'System Status', 'autonode' ); ?></h3></div>
+    <div class="amp-grid-3">
+        <div class="amp-step" style="border:0">
+            <div class="amp-stat-body">
+                <span style="font-size:12px;color:var(--amp-muted)"><?php esc_html_e( 'Permalinks', 'autonode' ); ?></span><br>
+                <?php 
+                $autonode_perm = get_option( 'selection_structure' ) || get_option( 'permalink_structure' ); 
+                if ( ! empty( $autonode_perm ) ) : ?>
+                    <span class="amp-badge amp-badge-active">✓ <?php esc_html_e( 'Post Name / Custom', 'autonode' ); ?></span>
+                <?php else : ?>
+                    <span class="amp-badge amp-badge-revoked">⚠ <?php esc_html_e( 'Plain (API incompatible)', 'autonode' ); ?></span>
+                <?php endif; ?>
+            </div>
+        </div>
+        <div class="amp-step" style="border:0">
+            <div class="amp-stat-body">
+                <span style="font-size:12px;color:var(--amp-muted)"><?php esc_html_e( 'SEO Support', 'autonode' ); ?></span><br>
+                <?php if ( 'none' !== $autonode_sp ) : ?>
+                    <span class="amp-badge amp-badge-active">✓ <?php echo esc_html( ucfirst( $autonode_sp ) ); ?></span>
+                <?php else : ?>
+                    <span class="amp-badge amp-badge-expired">⚠ <?php esc_html_e( 'Not Detected', 'autonode' ); ?></span>
+                <?php endif; ?>
+            </div>
+        </div>
+        <div class="amp-step" style="border:0">
+            <div class="amp-stat-body">
+                <span style="font-size:12px;color:var(--amp-muted)"><?php esc_html_e( 'SSL / HTTPS', 'autonode' ); ?></span><br>
+                <?php if ( is_ssl() ) : ?>
+                    <span class="amp-badge amp-badge-active">✓ <?php esc_html_e( 'Secure', 'autonode' ); ?></span>
+                <?php else : ?>
+                    <span class="amp-badge amp-badge-revoked">⚠ <?php esc_html_e( 'Insecure', 'autonode' ); ?></span>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- n8n Quick Connect -->
 <div class="amp-card">
-    <div class="amp-card-header"><h3> n8n Quick Connect</h3></div>
+    <div class="amp-card-header">
+        <h3><?php esc_html_e( 'n8n Quick Connect', 'autonode' ); ?></h3>
+        <button id="amp-download-n8n" class="amp-btn amp-btn-ghost" style="font-size:12px">
+            <span class="dashicons dashicons-download" style="font-size:14px;margin-top:2px"></span> <?php esc_html_e( 'Download n8n Config', 'autonode' ); ?>
+        </button>
+    </div>
     <div class="amp-grid-3">
         <div class="amp-step"><span class="amp-step-num">1</span>
-            <div><strong>Add Header Auth Credential</strong><p>In n8n  Credentials  Header Auth</p>
-            <code>Name: Authorization<br>Value: Bearer ampcm_&lt;key&gt;</code></div>
+            <div>
+                <strong><?php esc_html_e( 'Add Header Auth Credential', 'autonode' ); ?></strong>
+                <p><?php esc_html_e( 'In n8n -> Credentials -> Header Auth', 'autonode' ); ?></p>
+                <code>Name: Authorization<br>Value: Bearer ampcm_&lt;key&gt;</code>
+            </div>
         </div>
         <div class="amp-step"><span class="amp-step-num">2</span>
-            <div><strong>Set Base URL</strong><p>HTTP Request node URL:</p>
-            <code><?php echo esc_html( get_site_url() . '/wp-json/' . AUTONODE_NS ); ?></code></div>
+            <div>
+                <strong><?php esc_html_e( 'Set Base URL', 'autonode' ); ?></strong>
+                <p><?php esc_html_e( 'HTTP Request node URL:', 'autonode' ); ?></p>
+                <code><?php echo esc_url( get_site_url() . '/wp-json/' . AUTONODE_NS ); ?></code>
+            </div>
         </div>
         <div class="amp-step"><span class="amp-step-num">3</span>
-            <div><strong>POST /posts with inline SEO</strong>
-            <p>Send title, content, categories, tags, seo fields in one call.</p>
-            <a href="<?php echo esc_url( admin_url( 'admin.php?page=autonode-docs' ) ); ?>" class="amp-link">Full Docs </a></div>
+            <div>
+                <strong><?php esc_html_e( 'POST /posts with inline SEO', 'autonode' ); ?></strong>
+                <p><?php esc_html_e( 'Send title, content, categories, tags, seo fields in one call.', 'autonode' ); ?></p>
+                <a href="<?php echo esc_url( admin_url( 'admin.php?page=autonode-docs' ) ); ?>" class="amp-link"><?php esc_html_e( 'Full Docs', 'autonode' ); ?></a>
+            </div>
         </div>
     </div>
 </div>

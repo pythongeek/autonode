@@ -38,7 +38,7 @@ final class Media_Controller extends Base_Controller {
         $id = (int) $req->get_param( 'id' );
         $a  = get_post( $id );
         if ( ! $a || $a->post_type !== 'attachment' ) {
-            return self::fail( $req, new \WP_Error( 'amp_not_found', 'Media not found.', [ 'status' => 404 ] ), 'get_media' );
+            return self::fail( $req, new \WP_Error( 'amp_not_found', __( 'Media not found.', 'autonode' ), [ 'status' => 404 ] ), 'get_media' );
         }
         return self::ok( $req, [ 'media' => self::format_media( $a ) ], 200, 'get_media', $id, 'media' );
     }
@@ -49,25 +49,45 @@ final class Media_Controller extends Base_Controller {
         $body = $req->get_json_params() ?: [];
 
         if ( empty( $body['file_base64'] ) || empty( $body['filename'] ) ) {
-            return self::fail( $req, new \WP_Error( 'amp_invalid', 'file_base64 and filename are required.', [ 'status' => 400 ] ), 'upload_media' );
+            return self::fail( $req, new \WP_Error( 'amp_invalid', __( 'file_base64 and filename are required.', 'autonode' ), [ 'status' => 400 ] ), 'upload_media' );
+        }
+
+        $settings = get_option( 'autonode_settings', [] );
+        $max_mb   = (int) ( $settings['max_sideload_size'] ?? 20 );
+        
+        /* Estimate size from base64 (roughly 4/3 of binary) */
+        if ( strlen( $body['file_base64'] ) > ( $max_mb * 1024 * 1024 * 1.35 ) ) {
+            return self::fail( $req, new \WP_Error( 'amp_too_large', sprintf( __( 'File exceeds limit of %dMB.', 'autonode' ), $max_mb ), [ 'status' => 413 ] ), 'upload_media' );
         }
 
         $decoded = base64_decode( $body['file_base64'], true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
         if ( ! $decoded ) {
-            return self::fail( $req, new \WP_Error( 'amp_invalid', 'Invalid base64 data.', [ 'status' => 400 ] ), 'upload_media' );
+            return self::fail( $req, new \WP_Error( 'amp_invalid', __( 'Invalid base64 data.', 'autonode' ), [ 'status' => 400 ] ), 'upload_media' );
         }
 
         return self::save_upload( $req, $decoded, $body );
     }
 
-    /** Sideload from a public URL â€” fetches the file then attaches it to the media library */
+    /** Sideload from a public URL — fetches the file then attaches it to the media library */
     public static function sideload( \WP_REST_Request $req ): \WP_REST_Response|\WP_Error {
         self::require_wp_files();
         $body = $req->get_json_params() ?: [];
         $url  = esc_url_raw( $body['url'] ?? '' );
 
         if ( ! $url || ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
-            return self::fail( $req, new \WP_Error( 'amp_invalid', 'A valid "url" field is required.', [ 'status' => 400 ] ), 'sideload_media' );
+            return self::fail( $req, new \WP_Error( 'amp_invalid', __( 'A valid "url" field is required.', 'autonode' ), [ 'status' => 400 ] ), 'sideload_media' );
+        }
+
+        $settings = get_option( 'autonode_settings', [] );
+        $max_mb   = (int) ( $settings['max_sideload_size'] ?? 20 );
+
+        /* HEAD request to check size before downloading */
+        $head = wp_remote_head( $url, [ 'timeout' => 5 ] );
+        if ( ! is_wp_error( $head ) ) {
+            $cl = (int) wp_remote_retrieve_header( $head, 'content-length' );
+            if ( $cl > ( $max_mb * 1024 * 1024 ) ) {
+                return self::fail( $req, new \WP_Error( 'amp_too_large', sprintf( __( 'Remote file exceeds limit of %dMB.', 'autonode' ), $max_mb ), [ 'status' => 413 ] ), 'sideload_media' );
+            }
         }
 
         /* Fetch the remote file */
@@ -82,7 +102,7 @@ final class Media_Controller extends Base_Controller {
         @unlink( $tmp ); // phpcs:ignore
 
         if ( ! $decoded ) {
-            return self::fail( $req, new \WP_Error( 'amp_fetch_failed', 'Could not read downloaded file.', [ 'status' => 502 ] ), 'sideload_media' );
+            return self::fail( $req, new \WP_Error( 'amp_fetch_failed', __( 'Could not read downloaded file.', 'autonode' ), [ 'status' => 502 ] ), 'sideload_media' );
         }
 
         return self::save_upload( $req, $decoded, array_merge( $body, [ 'filename' => $filename ] ), 'sideload_media' );
@@ -154,7 +174,7 @@ final class Media_Controller extends Base_Controller {
     public static function destroy( \WP_REST_Request $req ): \WP_REST_Response|\WP_Error {
         $id = (int) $req->get_param( 'id' );
         if ( ! get_post( $id ) ) {
-            return self::fail( $req, new \WP_Error( 'amp_not_found', 'Media not found.', [ 'status' => 404 ] ), 'delete_media' );
+            return self::fail( $req, new \WP_Error( 'amp_not_found', __( 'Media not found.', 'autonode' ), [ 'status' => 404 ] ), 'delete_media' );
         }
         $r = wp_delete_attachment( $id, true );
         return self::ok( $req, [ 'deleted' => (bool) $r, 'id' => $id ], 200, 'delete_media', $id, 'media' );

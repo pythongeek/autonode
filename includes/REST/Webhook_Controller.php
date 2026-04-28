@@ -67,7 +67,7 @@ final class Webhook_Controller extends Base_Controller {
         global $wpdb;
         $id  = (int) $req->get_param( 'id' );
         $row = $wpdb->get_row( $wpdb->prepare( "SELECT id,key_id,label,target_url,events,post_types,active,last_fired_at,last_status,fire_count,fail_count,created_at FROM {$wpdb->prefix}autonode_webhooks WHERE id=%d", $id ), ARRAY_A ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        if ( ! $row ) return self::fail( $req, new \WP_Error( 'amp_not_found', 'Webhook not found.', [ 'status' => 404 ] ), 'get_webhook' );
+        if ( ! $row ) return self::fail( $req, new \WP_Error( 'amp_not_found', __( 'Webhook not found.', 'autonode' ), [ 'status' => 404 ] ), 'get_webhook' );
         return self::ok( $req, [ 'webhook' => $row ], 200, 'get_webhook', $id, 'webhook' );
     }
 
@@ -76,7 +76,7 @@ final class Webhook_Controller extends Base_Controller {
         $id   = (int) $req->get_param( 'id' );
         $body = $req->get_json_params() ?: [];
         if ( ! $wpdb->get_var( $wpdb->prepare( "SELECT id FROM {$wpdb->prefix}autonode_webhooks WHERE id=%d", $id ) ) ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-            return self::fail( $req, new \WP_Error( 'amp_not_found', 'Webhook not found.', [ 'status' => 404 ] ), 'update_webhook' );
+            return self::fail( $req, new \WP_Error( 'amp_not_found', __( 'Webhook not found.', 'autonode' ), [ 'status' => 404 ] ), 'update_webhook' );
         }
         $upd = [];
         if ( isset( $body['label'] )      ) $upd['label']      = sanitize_text_field( $body['label'] );

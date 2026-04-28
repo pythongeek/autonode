@@ -19,7 +19,7 @@ final class Oneshot_Controller extends Base_Controller {
         $body = $req->get_json_params() ?: [];
         
         if ( empty( $body['title'] ) ) {
-            return self::fail( $req, new \WP_Error( 'amp_invalid', 'Title is required.', [ 'status' => 400 ] ), 'oneshot_publish' );
+            return self::fail( $req, new \WP_Error( 'amp_invalid', __( 'Title is required.', 'autonode' ), [ 'status' => 400 ] ), 'oneshot_publish' );
         }
 
         /* 1. Create Post */

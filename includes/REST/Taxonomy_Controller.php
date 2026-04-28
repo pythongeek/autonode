@@ -27,7 +27,7 @@ final class Taxonomy_Controller extends Base_Controller {
     public static function create_cat( \WP_REST_Request $req ): \WP_REST_Response|\WP_Error {
         $body = $req->get_json_params() ?: [];
         $name = sanitize_text_field( $body['name'] ?? '' );
-        if ( ! $name ) return self::fail( $req, new \WP_Error( 'amp_invalid', 'Name required.', [ 'status' => 400 ] ), 'create_category' );
+        if ( ! $name ) return self::fail( $req, new \WP_Error( 'amp_invalid', __( 'Name required.', 'autonode' ), [ 'status' => 400 ] ), 'create_category' );
         $id = Taxonomy_Manager::get_or_create_category( $name, $body['slug'] ?? '' );
         if ( is_wp_error( $id ) ) return self::fail( $req, $id, 'create_category' );
         $t = get_term( $id, 'category' );

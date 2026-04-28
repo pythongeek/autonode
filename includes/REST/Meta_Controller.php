@@ -94,10 +94,10 @@ final class Meta_Controller extends Base_Controller {
         $id  = (int) $req->get_param( 'id' );
         $key = sanitize_key( $req->get_param( 'key' ) );
         if ( ! get_post( $id ) ) {
-            return self::fail( $req, new \WP_Error( 'amp_not_found', 'Post not found.', [ 'status' => 404 ] ), 'delete_meta' );
+            return self::fail( $req, new \WP_Error( 'amp_not_found', __( 'Post not found.', 'autonode' ), [ 'status' => 404 ] ), 'delete_meta' );
         }
         if ( self::is_blocked( $key ) ) {
-            return self::fail( $req, new \WP_Error( 'amp_forbidden', 'Cannot delete protected meta key.', [ 'status' => 403 ] ), 'delete_meta' );
+            return self::fail( $req, new \WP_Error( 'amp_forbidden', __( 'Cannot delete protected meta key.', 'autonode' ), [ 'status' => 403 ] ), 'delete_meta' );
         }
         $r = delete_post_meta( $id, $key );
         return self::ok( $req, [ 'deleted' => $r, 'key' => $key, 'post_id' => $id ], 200, 'delete_meta', $id, 'post' );

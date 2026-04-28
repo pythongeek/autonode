@@ -44,8 +44,11 @@ final class Compatibility {
         if ( ! apply_filters( 'wp_is_application_passwords_available', false ) ) return; // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WP core filter.
         if ( get_option( 'autonode_apppass_dismissed' ) ) return;
         echo '<div class="notice notice-warning is-dismissible"><p>';
-        echo '<strong>AMP Content Manager:</strong> Your theme enables WordPress Application Passwords globally. ';
-        echo '<a href="' . esc_url( admin_url( 'admin.php?page=autonode-compat' ) ) . '">View security recommendation â†’</a>';
+        printf( 
+            /* translators: %s: link to security recommendation */
+            __( '<strong>AutoNode WP:</strong> Your theme enables WordPress Application Passwords globally. %s', 'autonode' ), 
+            '<a href="' . esc_url( admin_url( 'admin.php?page=autonode-compat' ) ) . '">' . esc_html__( 'View security recommendation →', 'autonode' ) . '</a>'
+        );
         echo '</p></div>';
     }
 

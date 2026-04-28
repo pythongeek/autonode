@@ -2,7 +2,7 @@
 Contributors: bdowneertech
 Tags: api, rest, n8n, automation, seo
 Requires at least: 6.3
-Tested up to: 6.9
+Tested up to: 6.6
 Requires PHP: 8.1
 Stable tag: 4.2.0
 License: GPL-2.0+

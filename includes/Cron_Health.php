@@ -66,22 +66,30 @@ final class Cron_Health {
                 'status'          => 'real_cron',
                 'last_ping'       => $last_ping ?: null,
                 'stale_seconds'   => self::STALE_SECONDS,
-                'message'         => 'Server cron active (DISABLE_WP_CRON = true). Webhooks and jobs run on schedule.',
-                'next_event'      => $next ? human_time_diff( $next ) . ' from now' : null,
+                'message'         => __( 'Server cron active (DISABLE_WP_CRON = true). Webhooks and jobs run on schedule.', 'autonode' ),
+                'next_event'      => $next ? sprintf( __( '%s from now', 'autonode' ), human_time_diff( $next ) ) : null,
                 'scheduled_hooks' => self::list_hooks(),
             ];
         }
 
         if ( $last_ping === 0 ) {
-            $msg = 'Cron has never fired. Either the site has no traffic or WP-Cron is disabled.';
+            $msg = __( 'Cron has never fired. Either the site has no traffic or WP-Cron is disabled.', 'autonode' );
             $st  = 'stale';
         } elseif ( $age > self::STALE_SECONDS ) {
             $mins = (int) ceil( $age / 60 );
-            $msg  = "Last cron ping was {$mins} minutes ago â€” WP-Cron may not be running. Add a real server cron job.";
+            $msg  = sprintf( 
+                /* translators: %d: number of minutes */
+                __( 'Last cron ping was %d minutes ago — WP-Cron may not be running. Add a real server cron job.', 'autonode' ), 
+                $mins 
+            );
             $st   = 'stale';
         } else {
             $mins = (int) ceil( $age / 60 );
-            $msg  = "Cron is healthy. Last ping {$mins} minute(s) ago.";
+            $msg  = sprintf( 
+                /* translators: %d: number of minutes */
+                __( 'Cron is healthy. Last ping %d minute(s) ago.', 'autonode' ), 
+                $mins 
+            );
             $st   = 'ok';
         }
 
@@ -91,19 +99,19 @@ final class Cron_Health {
             'age_seconds'     => $last_ping ? $age : null,
             'stale_seconds'   => self::STALE_SECONDS,
             'message'         => $msg,
-            'next_event'      => $next ? human_time_diff( $next ) . ' from now' : 'Not scheduled',
+            'next_event'      => $next ? sprintf( __( '%s from now', 'autonode' ), human_time_diff( $next ) ) : __( 'Not scheduled', 'autonode' ),
             'scheduled_hooks' => self::list_hooks(),
         ];
     }
 
     private static function list_hooks(): array {
         $hooks = [
-            'autonode_prune_logs'        => 'Prune activity log (daily)',
-            'autonode_prune_rate_limits' => 'Prune rate limit buckets (hourly)',
-            'autonode_fire_webhook'      => 'Webhook delivery (single)',
-            'autonode_retry_webhook'     => 'Webhook retry (single)',
-            'autonode_cron_health_ping'  => 'Health ping (5 min)',
-            'autonode_prune_brute_force' => 'Prune brute-force log (hourly)',
+            'autonode_prune_logs'        => __( 'Prune activity log (daily)', 'autonode' ),
+            'autonode_prune_rate_limits' => __( 'Prune rate limit buckets (hourly)', 'autonode' ),
+            'autonode_fire_webhook'      => __( 'Webhook delivery (single)', 'autonode' ),
+            'autonode_retry_webhook'     => __( 'Webhook retry (single)', 'autonode' ),
+            'autonode_cron_health_ping'  => __( 'Health ping (5 min)', 'autonode' ),
+            'autonode_prune_brute_force' => __( 'Prune brute-force log (hourly)', 'autonode' ),
         ];
         $result = [];
         foreach ( $hooks as $hook => $label ) {
@@ -112,7 +120,7 @@ final class Cron_Health {
                 'hook'      => $hook,
                 'label'     => $label,
                 'scheduled' => (bool) $next,
-                'next_run'  => $next ? human_time_diff( $next ) . ' from now' : 'â€”',
+                'next_run'  => $next ? sprintf( __( '%s from now', 'autonode' ), human_time_diff( $next ) ) : '—',
             ];
         }
         return $result;

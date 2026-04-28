@@ -9,7 +9,7 @@ final class Post_Manager {
 
     public static function create( array $data, string $type = 'post' ): int|\WP_Error {
         if ( ! in_array( $data['status'] ?? 'draft', self::STATUSES, true ) ) {
-            return new \WP_Error( 'amp_invalid', 'Invalid status.', [ 'status' => 400 ] );
+            return new \WP_Error( 'amp_invalid', __( 'Invalid status.', 'autonode' ), [ 'status' => 400 ] );
         }
         $args = [
             'post_type'    => $type,

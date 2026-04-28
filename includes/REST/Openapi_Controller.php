@@ -22,11 +22,11 @@ final class Openapi_Controller extends Base_Controller {
             'openapi' => '3.0.0',
             'info' => [
                 'title' => 'AutoNode WP',
-                'description' => 'Enterprise REST API bridge for n8n. Manage WordPress Posts, Rank Math SEO, Media, and Webhooks.',
+                'description' => __( 'Enterprise REST API bridge for n8n. Manage WordPress Posts, Rank Math SEO, Media, and Webhooks.', 'autonode' ),
                 'version' => AUTONODE_VERSION
             ],
             'servers' => [
-                [ 'url' => $api_url, 'description' => 'Current WordPress Site' ]
+                [ 'url' => $api_url, 'description' => __( 'Current WordPress Site', 'autonode' ) ]
             ],
             'components' => [
                 'securitySchemes' => [
@@ -43,8 +43,8 @@ final class Openapi_Controller extends Base_Controller {
             'paths' => [
                 '/bulk/oneshot' => [
                     'post' => [
-                        'summary' => 'One-Shot Publish',
-                        'description' => 'Create a post, assign categories, sideload a featured image, and set Rank Math SEO in a single HTTP request.',
+                        'summary' => __( 'One-Shot Publish', 'autonode' ),
+                        'description' => __( 'Create a post, assign categories, sideload a featured image, and set Rank Math SEO in a single HTTP request.', 'autonode' ),
                         'requestBody' => [
                             'required' => true,
                             'content' => [
@@ -71,17 +71,17 @@ final class Openapi_Controller extends Base_Controller {
                             ]
                         ],
                         'responses' => [
-                            '201' => [ 'description' => 'Successfully created and mapped everything.' ]
+                            '201' => [ 'description' => __( 'Successfully created and mapped everything.', 'autonode' ) ]
                         ]
                     ]
                 ],
                 '/posts' => [
-                    'get' => [ 'summary' => 'List Posts' ],
-                    'post' => [ 'summary' => 'Create Post' ]
+                    'get' => [ 'summary' => __( 'List Posts', 'autonode' ) ],
+                    'post' => [ 'summary' => __( 'Create Post', 'autonode' ) ]
                 ],
                 '/media/sideload' => [
                     'post' => [
-                        'summary' => 'Sideload Media from URL',
+                        'summary' => __( 'Sideload Media from URL', 'autonode' ),
                         'requestBody' => [
                             'content' => [
                                 'application/json' => [

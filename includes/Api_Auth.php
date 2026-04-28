@@ -120,7 +120,7 @@ final class Api_Auth {
         /* HTTPS check */
         $settings = get_option( 'autonode_settings', [] );
         if ( ! empty( $settings['require_https'] ) && ! is_ssl() && ! ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ) {
-            return new \WP_Error( 'amp_ssl_required', 'HTTPS required.', [ 'status' => 403 ] );
+            return new \WP_Error( 'amp_ssl_required', __( 'HTTPS required.', 'autonode' ), [ 'status' => 403 ] );
         }
 
         /* Extract bearer token */
@@ -132,13 +132,13 @@ final class Api_Auth {
             }
         }
         if ( empty( $auth ) || ! str_starts_with( $auth, 'Bearer ' ) ) {
-            return new \WP_Error( 'amp_no_auth', 'Missing Authorization header.', [ 'status' => 401 ] );
+            return new \WP_Error( 'amp_no_auth', __( 'Missing Authorization header.', 'autonode' ), [ 'status' => 401 ] );
         }
 
         $raw = trim( substr( $auth, 7 ) );
         if ( ! str_starts_with( $raw, self::PREFIX ) ) {
             Brute_Force::record_failure( $ip );
-            return new \WP_Error( 'amp_bad_token', 'Malformed token.', [ 'status' => 401 ] );
+            return new \WP_Error( 'amp_bad_token', __( 'Malformed token.', 'autonode' ), [ 'status' => 401 ] );
         }
 
         global $wpdb;

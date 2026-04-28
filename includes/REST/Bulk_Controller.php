@@ -19,10 +19,10 @@ final class Bulk_Controller extends Base_Controller {
         $items     = (array) ( $body['items'] ?? [] );
 
         if ( ! $operation || empty( $items ) ) {
-            return self::fail( $req, new \WP_Error( 'amp_invalid', 'operation and items required.', [ 'status' => 400 ] ), 'bulk' );
+            return self::fail( $req, new \WP_Error( 'amp_invalid', __( 'operation and items required.', 'autonode' ), [ 'status' => 400 ] ), 'bulk' );
         }
         if ( count( $items ) > 50 ) {
-            return self::fail( $req, new \WP_Error( 'amp_too_many', 'Max 50 items per request.', [ 'status' => 400 ] ), 'bulk' );
+            return self::fail( $req, new \WP_Error( 'amp_too_many', __( 'Max 50 items per request.', 'autonode' ), [ 'status' => 400 ] ), 'bulk' );
         }
 
         $results = []; $success = 0; $errors = 0;
@@ -37,7 +37,7 @@ final class Bulk_Controller extends Base_Controller {
                     'delete'      => self::delete( $id ),
                     'update_seo'  => self::update_seo( $id, $item['seo'] ?? [] ),
                     'update_meta' => self::update_meta( $id, $item['meta'] ?? [] ),
-                    default       => [ 'error' => 'Unknown operation: ' . $operation ],
+                    default       => [ 'error' => sprintf( __( 'Unknown operation: %s', 'autonode' ), $operation ) ],
                 };
                 if ( isset( $r['error'] ) ) { $errors++; $results[] = [ 'id' => $id, 'status' => 'error', 'message' => $r['error'] ]; }
                 else                        { $success++; $results[] = array_merge( [ 'id' => $id, 'status' => 'success' ], $r ); }
@@ -57,16 +57,16 @@ final class Bulk_Controller extends Base_Controller {
 
     private static function delete( int $id ): array {
         $r = wp_delete_post( $id, true );
-        return $r ? [ 'deleted' => true ] : [ 'error' => 'Delete failed' ];
+        return $r ? [ 'deleted' => true ] : [ 'error' => __( 'Delete failed', 'autonode' ) ];
     }
 
     private static function update_seo( int $id, array $seo ): array {
-        if ( ! $seo ) return [ 'error' => 'No SEO data provided' ];
+        if ( ! $seo ) return [ 'error' => __( 'No SEO data provided', 'autonode' ) ];
         return Rankmath_Handler::update( $id, $seo );
     }
 
     private static function update_meta( int $id, array $meta ): array {
-        if ( ! $meta ) return [ 'error' => 'No meta data provided' ];
+        if ( ! $meta ) return [ 'error' => __( 'No meta data provided', 'autonode' ) ];
         foreach ( $meta as $k => $v ) update_post_meta( $id, sanitize_key( $k ), $v );
         return [ 'updated' => count( $meta ) ];
     }

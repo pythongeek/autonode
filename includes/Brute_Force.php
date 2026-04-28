@@ -35,7 +35,11 @@ final class Brute_Force {
             $secs = strtotime( $row['blocked_until'] ) - time();
             return new \WP_Error(
                 'amp_ip_blocked',
-                sprintf( 'Too many failed attempts. Retry in %d seconds.', $secs ),
+                sprintf( 
+                    /* translators: %d: number of seconds */
+                    __( 'Too many failed attempts. Retry in %d seconds.', 'autonode' ), 
+                    $secs 
+                ),
                 [ 'status' => 429 ]
             );
         }

@@ -65,7 +65,7 @@ final class Posts_Controller extends Base_Controller {
         $id   = (int) $req->get_param( 'id' );
         $body = $req->get_json_params() ?: [];
         $post = get_post( $id );
-        if ( ! $post || $post->post_type !== 'post' ) return self::fail( $req, new \WP_Error( 'amp_not_found', 'Post not found.', [ 'status' => 404 ] ), 'update_post' );
+        if ( ! $post || $post->post_type !== 'post' ) return self::fail( $req, new \WP_Error( 'amp_not_found', __( 'Post not found.', 'autonode' ), [ 'status' => 404 ] ), 'update_post' );
         $r = Post_Manager::update( $id, $body );
         if ( is_wp_error( $r ) ) return self::fail( $req, $r, 'update_post' );
         if ( ! empty( $body['seo'] ) ) Rankmath_Handler::update( $id, $body['seo'] );

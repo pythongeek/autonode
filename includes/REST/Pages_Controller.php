@@ -46,7 +46,7 @@ final class Pages_Controller extends Base_Controller {
     public static function show( \WP_REST_Request $req ): \WP_REST_Response|\WP_Error {
         $id   = (int) $req->get_param( 'id' );
         $post = get_post( $id );
-        if ( ! $post || $post->post_type !== 'page' ) return self::fail( $req, new \WP_Error( 'amp_not_found', 'Page not found.', [ 'status' => 404 ] ), 'get_page' );
+        if ( ! $post || $post->post_type !== 'page' ) return self::fail( $req, new \WP_Error( 'amp_not_found', __( 'Page not found.', 'autonode' ), [ 'status' => 404 ] ), 'get_page' );
         $data = Post_Manager::format( $post );
         $data['seo'] = Rankmath_Handler::read( $id );
         return self::ok( $req, [ 'post' => $data ], 200, 'get_page', $id, 'page' );
@@ -56,7 +56,7 @@ final class Pages_Controller extends Base_Controller {
         $id   = (int) $req->get_param( 'id' );
         $body = $req->get_json_params() ?: [];
         $post = get_post( $id );
-        if ( ! $post || $post->post_type !== 'page' ) return self::fail( $req, new \WP_Error( 'amp_not_found', 'Page not found.', [ 'status' => 404 ] ), 'update_page' );
+        if ( ! $post || $post->post_type !== 'page' ) return self::fail( $req, new \WP_Error( 'amp_not_found', __( 'Page not found.', 'autonode' ), [ 'status' => 404 ] ), 'update_page' );
         $r = Post_Manager::update( $id, $body );
         if ( is_wp_error( $r ) ) return self::fail( $req, $r, 'update_page' );
         if ( ! empty( $body['seo'] ) ) Rankmath_Handler::update( $id, $body['seo'] );

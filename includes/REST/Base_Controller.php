@@ -26,11 +26,27 @@ abstract class Base_Controller {
         } );
 
         if ( ! $rate['allowed'] ) {
-            return new \WP_Error( 'amp_rate_limited', 'Rate limit exceeded. Retry after ' . gmdate( 'c', $rate['reset_at'] ), [ 'status' => 429 ] );
+            return new \WP_Error( 
+                'amp_rate_limited', 
+                sprintf( 
+                    /* translators: %s: retry date/time */
+                    __( 'Rate limit exceeded. Retry after %s', 'autonode' ), 
+                    gmdate( 'c', $rate['reset_at'] ) 
+                ), 
+                [ 'status' => 429 ] 
+            );
         }
 
         if ( $scope && ! Api_Auth::has_scope( $key, $scope ) ) {
-            return new \WP_Error( 'amp_forbidden', "Scope required: {$scope}", [ 'status' => 403 ] );
+            return new \WP_Error( 
+                'amp_forbidden', 
+                sprintf( 
+                    /* translators: %s: required scope name */
+                    __( 'Scope required: %s', 'autonode' ), 
+                    $scope 
+                ), 
+                [ 'status' => 403 ] 
+            );
         }
 
         if ( ! empty( $key['user_id'] ) ) {
