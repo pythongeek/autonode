@@ -1,0 +1,82 @@
+=== AutoNode WP Privacy Policy ===
+
+This plugin collects the following data:
+
+1. API Access Logs
+When an API key is used to make a request, the following information is recorded:
+- Timestamp of the request
+- API key ID and key prefix (not the full key)
+- Request method and endpoint path
+- HTTP response status code
+- Response time in milliseconds
+- Client IP address
+- User agent string
+
+2. API Key Metadata
+When an API key is created, the following is stored:
+- Key label and description (as entered by the administrator)
+- Creation timestamp
+- Expiration date (if set)
+- Environment (production/staging)
+- Assigned scopes
+- IP whitelist (if configured)
+- Last-used timestamp and total request count
+
+3. Brute-Force Protection Data
+To protect against brute-force attacks, the plugin records:
+- IP addresses that have failed authentication
+- Timestamp and count of failed attempts
+- These records are automatically purged when an IP is unblocked or after the configurable block window expires.
+
+4. Webhook Delivery Logs
+When webhooks are triggered, the following may be logged:
+- Webhook target URL
+- Event type that triggered the delivery
+- HTTP response from the target server
+- Delivery attempt count and final status
+
+5. Analytics Data
+Internal analytics track:
+- Hourly aggregated request counts per endpoint
+- Error counts and average response times
+- Used exclusively for display in the plugin dashboard.
+
+=== Data Retention ===
+
+All log data is retained for a configurable period (default: 90 days, minimum: 1 day, maximum: 365 days).
+The retention period is set via the "Log Retention Days" setting on the plugin's Settings page.
+Analytics aggregates are retained for 30 days.
+Webhook delivery logs are retained for 30 days.
+Expired or revoked API key records are retained for 90 days after revocation for audit purposes.
+
+=== Data Sharing ===
+
+This plugin does NOT:
+- Send any data to external third parties
+- Collect or store full API keys (only truncated prefixes are stored)
+- Use cookies or tracking across different websites
+- Collect any data from site visitors (only WP admin and API key usage is logged)
+
+API key hashes are stored in the WordPress database and are never exposed through the API or admin UI in plain text.
+
+=== Security ===
+
+All API keys are hashed using SHA-256 before storage.
+Webhook secrets are stored raw for HMAC signature verification only.
+IP addresses are stored for brute-force protection and are purgeable.
+Connections to webhook target URLs are made on-demand when a WordPress post event occurs.
+
+=== GDPR Compliance ===
+
+Site administrators are responsible for:
+- Ensuring their site's privacy policy discloses the use of this plugin and its data collection practices
+- Responding to data subject requests (e.g., deletion of API key records) by using the plugin's key revocation and log clearing features
+- The plugin does not collect data from site visitors or non-authenticated users
+
+To delete all collected data: uninstalling this plugin will remove all database tables and options. Alternatively, use the "Clear Logs" button on the Activity Log page to purge log data without removing the plugin.
+
+=== Changes to This Policy ===
+
+If this privacy policy is updated, the "Last updated" date below will be revised.
+
+Last updated: 2026-04-29
